@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusAI Recruit v2.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --purple: #7C3AED;
+  --purple-light: #9D5CF6;
+  --purple-dark: #5B21B6;
+  --blue: #2563EB;
+  --blue-light: #3B82F6;
+  --cyan: #06B6D4;
+  --cyan-light: #22D3EE;
+  --green: #10B981;
+  --green-light: #34D399;
+  --yellow: #F59E0B;
+  --yellow-light: #FCD34D;
+  --red: #EF4444;
+  --red-light: #F87171;
+  --bg-primary: #080B14;
+  --bg-secondary: #0D1117;
+  --bg-card: rgba(255,255,255,0.04);
+  --bg-card-hover: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(124,58,237,0.5);
+  --text-primary: #F1F5F9;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --sidebar-width: 240px;
+  --header-height: 64px;
+  --glass-bg: rgba(13,17,23,0.7);
+  --glass-border: rgba(255,255,255,0.06);
+  --shadow-glow: 0 0 40px rgba(124,58,237,0.15);
+  --radius: 12px;
+  --radius-lg: 16px;
+  --transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+[data-theme="light"] {
+  --bg-primary: #F1F5F9;
+  --bg-secondary: #E2E8F0;
+  --bg-card: rgba(255,255,255,0.8);
+  --bg-card-hover: rgba(255,255,255,0.95);
+  --border: rgba(0,0,0,0.08);
+  --border-hover: rgba(124,58,237,0.4);
+  --text-primary: #0F172A;
+  --text-secondary: #475569;
+  --text-muted: #94A3B8;
+  --glass-bg: rgba(241,245,249,0.85);
+  --glass-border: rgba(0,0,0,0.06);
+  --shadow-glow: 0 0 40px rgba(124,58,237,0.1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+#particles-canvas {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0; opacity: 0.45;
+}
+.app-layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  grid-template-rows: var(--header-height) 1fr;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+}
+
+/* SIDEBAR */
+.sidebar {
+  grid-row: 1 / -1;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-right: 1px solid var(--glass-border);
+  display: flex; flex-direction: column;
+  padding: 0;
+  position: sticky; top: 0; height: 100vh;
+  overflow: hidden;
+}
+.sidebar-logo {
+  display: flex; align-items: center; gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  text-decoration: none;
+}
+.logo-icon {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(124,58,237,0.4);
+}
+.logo-text { line-height: 1; }
+.logo-text .brand { font-size: 15px; font-weight: 800; color: var(--text-primary); letter-spacing: -0.3px; }
+.logo-text .sub { font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+.sidebar-nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 13.5px; font-weight: 500;
+  transition: all var(--transition);
+  border: 1px solid transparent;
+  user-select: none;
+}
+.nav-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.nav-item.active {
+  background: linear-gradient(135deg, rgba(124,58,237,0.2), rgba(6,182,212,0.1));
+  color: var(--purple-light);
+  border-color: rgba(124,58,237,0.25);
+}
+.nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--purple);
+  color: #fff; font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 20px;
+}
+.sidebar-footer {
+  padding: 14px 14px;
+  border-top: 1px solid var(--border);
+}
+.user-card {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px; border-radius: 8px;
+  background: var(--bg-card);
+  cursor: pointer; transition: background var(--transition);
+}
+.user-card:hover { background: var(--bg-card-hover); }
+.user-avatar-sm {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+}
+.user-info .name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+.user-info .role { font-size: 11px; color: var(--text-muted); }
+
+/* HEADER */
+.header {
+  grid-column: 2;
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 28px;
+  position: sticky; top: 0; z-index: 100;
+}
+.page-title { font-size: 17px; font-weight: 700; color: var(--text-primary); white-space: nowrap; }
+.header-search {
+  flex: 1; max-width: 380px;
+  position: relative;
+}
+.header-search input {
+  width: 100%; padding: 8px 14px 8px 36px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-primary); font-size: 13px; font-family: inherit;
+  outline: none; transition: border-color var(--transition), background var(--transition);
+}
+.header-search input:focus { border-color: var(--purple); background: var(--bg-card-hover); }
+.header-search input::placeholder { color: var(--text-muted); }
+.header-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); width: 15px; height: 15px; }
+.header-actions { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+.btn-icon {
+  width: 36px; height: 36px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); transition: all var(--transition);
+}
+.btn-icon:hover { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-hover); }
+.btn-icon svg { width: 16px; height: 16px; }
+.header-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple), var(--cyan));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; color: #fff; cursor: pointer;
+  border: 2px solid rgba(124,58,237,0.4);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+.header-avatar:hover { transform: scale(1.05); box-shadow: 0 0 12px rgba(124,58,237,0.5); }
+
+/* MAIN */
+.main-content {
+  grid-column: 2;
+  padding: 28px;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--header-height));
+}
+.tab-panel { display: none; animation: fadeInUp 0.3s ease; }
+.tab-panel.active { display: block; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* METRIC CARDS */
+.metrics-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px;
+}
+.metric-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  transition: all var(--transition);
+  cursor: default;
+  position: relative; overflow: hidden;
+}
+.metric-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: var(--card-gradient);
+}
+.metric-card:hover { background: var(--bg-card-hover); border-color: var(--border-hover); transform: translateY(-2px); box-shadow: var(--shadow-glow); }
+.metric-card[data-index="0"] { --card-gradient: linear-gradient(90deg, var(--purple), var(--blue)); }
+.metric-card[data-index="1"] { --card-gradient: linear-gradient(90deg, var(--cyan), var(--blue)); }
+.metric-card[data-index="2"] { --card-gradient: linear-gradient(90deg, var(--green), var(--cyan)); }
+.metric-card[data-index="3"] { --card-gradient: linear-gradient(90deg, var(--yellow), var(--purple)); }
+.metric-label { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.metric-value { font-size: 30px; font-weight: 800; color: var(--text-primary); letter-spacing: -1px; line-height: 1; }
+.metric-value span { font-size: 14px; font-weight: 500; color: var(--text-muted); }
+.metric-footer { margin-top: 8px; font-size: 12px; color: var(--green); display: flex; align-items: center; gap: 4px; }
+.metric-icon {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  opacity: 0.12;
+}
+.metric-icon svg { width: 48px; height: 48px; }
+
+/* SECTION HEADER */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 12px; flex-wrap: wrap;
+}
+.section-title { font-size: 16px; font-weight: 700; color: var(--text-primary); }
+.btn {
+  padding: 8px 16px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all var(--transition); border: none; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--purple), var(--blue));
+  color: #fff; box-shadow: 0 4px 12px rgba(124,58,237,0.3);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(124,58,237,0.45); }
+.btn-secondary {
+  background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary);
+}
+.btn-secondary:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.btn-success { background: linear-gradient(135deg, var(--green), #059669); color: #fff; }
+.btn-danger { background: linear-gradient(135deg, var(--red), #DC2626); color: #fff; }
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* FILTERS */
+.filters-bar {
+  display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; align-items: center;
+  padding: 14px 16px;
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+.filter-group { display: flex; align-items: center; gap: 8px; }
+.filter-label { font-size: 12px; font-weight: 500; color: var(--text-muted); white-space: nowrap; }
+select.filter-select, input.filter-range {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 6px; color: var(--text-primary);
+  font-family: inherit; font-size: 12.5px;
+  padding: 6px 10px; outline: none;
+  transition: border-color var(--transition);
+}
+select.filter-select:focus, input.filter-range:focus { border-color: var(--purple); }
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100px; height: 4px; border-radius: 2px; padding: 0;
+  background: linear-gradient(90deg, var(--purple) var(--range-pct, 0%), var(--border) var(--range-pct, 0%));
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%;
+  background: var(--purple); cursor: pointer; border: 2px solid #fff;
+  box-shadow: 0 0 6px rgba(124,58,237,0.5);
+}
+.range-val { font-size: 12px; font-weight: 600; color: var(--purple-light); min-width: 24px; }
+.checkbox-group { display: flex; gap: 10px; }
+.checkbox-label {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 500; color: var(--text-secondary);
+  cursor: pointer; user-select: none;
+}
+.checkbox-label input { accent-color: var(--purple); }
+
+/* CANDIDATES GRID */
+.candidates-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px;
+}
+.candidate-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px;
+  cursor: pointer; transition: all var(--transition);
+  animation: fadeInUp 0.4s ease both;
+}
+.candidate-card:hover {
+  background: var(--bg-card-hover); border-color: var(--border-hover);
+  transform: translateY(-3px); box-shadow: 0 8px 30px rgba(124,58,237,0.2);
+}
+.candidate-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.candidate-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #fff; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.candidate-info .name { font-size: 14.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.candidate-info .role { font-size: 12px; color: var(--text-secondary); }
+.candidate-skills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.skill-badge {
+  padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;
+  background: rgba(124,58,237,0.15); color: var(--purple-light); border: 1px solid rgba(124,58,237,0.2);
+}
+.skill-badge:nth-child(3n+1) { background: rgba(6,182,212,0.12); color: var(--cyan-light); border-color: rgba(6,182,212,0.2); }
+.skill-badge:nth-child(3n+2) { background: rgba(37,99,235,0.12); color: #60A5FA; border-color: rgba(37,99,235,0.2); }
+.candidate-footer { display: flex; align-items: center; justify-content: space-between; }
+.score-section { flex: 1; margin-right: 14px; }
+.score-label { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; display: flex; justify-content: space-between; }
+.score-val { font-size: 12px; font-weight: 700; }
+.score-bar { height: 5px; border-radius: 3px; background: var(--border); overflow: hidden; }
+.score-fill { height: 100%; border-radius: 3px; transition: width 1.2s cubic-bezier(0.4,0,0.2,1); }
+.score-fill.green { background: linear-gradient(90deg, var(--green), var(--cyan)); }
+.score-fill.yellow { background: linear-gradient(90deg, var(--yellow), #F97316); }
+.score-fill.red { background: linear-gradient(90deg, var(--red), #DC2626); }
+.status-badge {
+  padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
+  white-space: nowrap; flex-shrink: 0;
+}
+.status-badge.aprovado { background: rgba(16,185,129,0.15); color: var(--green-light); border: 1px solid rgba(16,185,129,0.25); }
+.status-badge.analise { background: rgba(245,158,11,0.15); color: var(--yellow-light); border: 1px solid rgba(245,158,11,0.25); }
+.status-badge.rejeitado { background: rgba(239,68,68,0.15); color: var(--red-light); border: 1px solid rgba(239,68,68,0.25); }
+
+/* CHART SECTION */
+.dashboard-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.chart-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;
+}
+.chart-card canvas { display: block; }
+
+/* DRAWER */
+.drawer-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px); z-index: 200;
+  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+}
+.drawer-overlay.open { opacity: 1; pointer-events: all; }
+.drawer {
+  position: fixed; top: 0; right: -440px; width: 420px; height: 100vh;
+  background: var(--glass-bg);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 201;
+  overflow-y: auto;
+  transition: right 0.35s cubic-bezier(0.4,0,0.2,1);
+  display: flex; flex-direction: column;
+}
+.drawer.open { right: 0; }
+.drawer-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+}
+.drawer-close {
+  width: 32px; height: 32px; border-radius: 6px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--text-secondary); transition: all var(--transition); margin-left: auto;
+}
+.drawer-close:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.drawer-body { padding: 20px; flex: 1; }
+.drawer-section-title { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+.radar-container { position: relative; width: 100%; display: flex; justify-content: center; margin-bottom: 20px; }
+.score-bars { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.score-bar-item { display: flex; flex-direction: column; gap: 4px; }
+.score-bar-label { display: flex; justify-content: space-between; font-size: 12px; }
+.score-bar-label span:first-child { color: var(--text-secondary); font-weight: 500; }
+.score-bar-label span:last-child { color: var(--text-primary); font-weight: 700; }
+.score-bar-track { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.score-bar-fill {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--purple), var(--cyan));
+  transition: width 1s cubic-bezier(0.4,0,0.2,1);
+}
+.timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 20px; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: var(--border); }
+.timeline-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; position: relative; z-index: 1; }
+.timeline-dot {
+  width: 30px; height: 30px; border-radius: 50%; border: 2px solid var(--border);
+  background: var(--bg-secondary); display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 11px; font-weight: 700; transition: all var(--transition);
+}
+.timeline-dot.done { background: linear-gradient(135deg, var(--purple), var(--blue)); border-color: var(--purple); color: #fff; }
+.timeline-dot.current { background: linear-gradient(135deg, var(--cyan), var(--blue)); border-color: var(--cyan); color: #fff; box-shadow: 0 0 10px rgba(6,182,212,0.4); }
+.timeline-content .t-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.timeline-content .t-date { font-size: 11px; color: var(--text-muted); }
+.ai-report {
+  background: linear-gradient(135deg, rgba(124,58,237,0.08), rgba(6,182,212,0.06));
+  border: 1px solid rgba(124,58,237,0.2);
+  border-radius: var(--radius); padding: 14px; margin-top: 14px;
+  animation: fadeInUp 0.3s ease;
+}
+.ai-report h4 { font-size: 12px; font-weight: 600; color: var(--purple-light); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.ai-report ul { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+.ai-report li { font-size: 12.5px; color: var(--text-secondary); padding-left: 16px; position: relative; }
+.ai-report li::before { content: '→'; position: absolute; left: 0; color: var(--cyan); font-size: 11px; }
+.spinner {
+  width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.drawer-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.drawer-actions .btn { flex: 1; justify-content: center; }
+
+/* TOAST */
+.toast-container {
+  position: fixed; bottom: 24px; right: 24px; z-index: 999;
+  display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+}
+.toast {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px; padding: 12px 16px;
+  display: flex; align-items: center; gap: 10px;
+  min-width: 260px; max-width: 360px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  pointer-events: all;
+  animation: toastIn 0.3s ease;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.toast.hiding { opacity: 0; transform: translateX(20px); }
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast-icon { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; }
+.toast-icon.success { background: rgba(16,185,129,0.2); }
+.toast-icon.error { background: rgba(239,68,68,0.2); }
+.toast-icon.info { background: rgba(124,58,237,0.2); }
+.toast-msg { font-size: 13px; font-weight: 500; color: var(--text-primary); flex: 1; }
+.toast-close { width: 20px; height: 20px; cursor: pointer; color: var(--text-muted); background: none; border: none; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: color var(--transition); }
+.toast-close:hover { color: var(--text-primary); }
+
+/* VAGAS */
+.vagas-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+.vaga-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;
+  transition: all var(--transition); cursor: pointer; animation: fadeInUp 0.4s ease both;
+  position: relative; overflow: hidden;
+}
+.vaga-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, var(--purple), var(--cyan)); opacity: 0; transition: opacity var(--transition); }
+.vaga-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(124,58,237,0.2); border-color: var(--border-hover); }
+.vaga-header { margin-bottom: 14px; }
+.vaga-role { font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.vaga-area-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; background: rgba(124,58,237,0.15); color: var(--purple-light); }
+.vaga-stats { display: flex; gap: 16px; margin-bottom: 14px; }
+.vaga-stat { text-align: center; }
+.vaga-stat .val { font-size: 20px; font-weight: 800; color: var(--text-primary); }
+.vaga-stat .lbl { font-size: 11px; color: var(--text-muted); }
+.vaga-deadline { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+.vaga-status { position: absolute; top: 16px; right: 16px; }
+
+/* RELATORIOS */
+.relatorio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.relatorio-card {
+  background: var(--bg-card); backdrop-filter: blur(12px);
+  border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px;
+  animation: fadeInUp 0.4s ease both;
+}
+.bar-chart { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.bar-row { display: flex; align-items: center; gap: 10px; }
+.bar-row-label { width: 120px; font-size: 12px; color: var(--text-secondary); text-align: right; flex-shrink: 0; }
+.bar-track { flex: 1; height: 20px; background: var(--border); border-radius: 4px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-right: 8px; justify-content: flex-end; transition: width 1.5s cubic-bezier(0.4,0,0.2,1); }
+.bar-fill span { font-size: 10px; font-weight: 700; color: #fff; }
+
+/* FOOTER */
+.main-footer {
+  text-align: center; padding: 24px 0 8px;
+  font-size: 11.5px; color: var(--text-muted); border-top: 1px solid var(--border); margin-top: 40px;
+}
+.main-footer strong { color: var(--purple-light); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-row { grid-template-columns: 1fr; }
+  .relatorio-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  :root { --sidebar-width: 64px; }
+  .logo-text, .nav-item span, .user-info { display: none; }
+  .sidebar-logo { justify-content: center; }
+  .nav-item { justify-content: center; padding: 12px; }
+  .nav-badge { display: none; }
+  .sidebar-footer { padding: 10px 6px; }
+  .user-card { justify-content: center; padding: 8px; }
+  .metrics-grid { grid-template-columns: 1fr 1fr; }
+  .drawer { width: 100%; right: -100%; }
+  .main-content { padding: 16px; }
+}
+
+/* NO RESULTS */
+.no-results {
+  grid-column: 1/-1; text-align: center; padding: 48px;
+  color: var(--text-muted); font-size: 14px;
+}
+.no-results svg { display: block; margin: 0 auto 12px; opacity: 0.3; }
+</style>
+</head>
+<body>
+<canvas id="particles-canvas"></canvas>
+
+<div class="app-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a class="sidebar-logo" href="#">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2">
+          <path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2v1.5c1.2.7 2 2 2 3.5a4 4 0 0 1-8 0c0-1.5.8-2.8 2-3.5V16H8a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h2V9.5C8.8 8.8 8 7.5 8 6a4 4 0 0 1 4-4z"/>
+          <circle cx="12" cy="12" r="1.5" fill="#fff" stroke="none"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <div class="brand">NexusAI</div>
+        <div class="sub">Recruit v2.1</div>
+      </div>
+    </a>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" data-tab="dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" data-tab="candidatos">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        <span>Candidatos</span>
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" data-tab="vagas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+        <span>Vagas</span>
+        <span class="nav-badge">5</span>
+      </div>
+      <div class="nav-item" data-tab="relatorios">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Relatórios</span>
+      </div>
+      <div class="nav-item" data-tab="config" style="margin-top:auto">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M5.34 18.66l-1.41 1.41M20 12h2M2 12h2M19.07 19.07l-1.41-1.41M5.34 5.34L3.93 3.93M12 20v2M12 2v2"/></svg>
+        <span>Configurações</span>
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar-sm">RH</div>
+        <div class="user-info">
+          <div class="name">Admin RH</div>
+          <div class="role">Gerente de Talentos</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="page-title" id="page-title">Dashboard</div>
+    <div class="header-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="global-search" placeholder="Buscar candidatos, habilidades..." autocomplete="off">
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="theme-toggle" title="Alternar tema">
+        <svg id="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+        <svg id="theme-icon-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="btn-icon" title="Notificações">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      </button>
+      <div class="header-avatar">BM</div>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main-content" id="main-content">
+
+    <!-- DASHBOARD TAB -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="metrics-grid">
+        <div class="metric-card" data-index="0">
+          <div class="metric-label">Total Candidatos</div>
+          <div class="metric-value"><span id="cnt-total">0</span></div>
+          <div class="metric-footer">↑ +12 esta semana</div>
+          <div class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        </div>
+        <div class="metric-card" data-index="1">
+          <div class="metric-label">Match Rate IA</div>
+          <div class="metric-value"><span id="cnt-match">0</span><span>%</span></div>
+          <div class="metric-footer">↑ +5% vs mês anterior</div>
+          <div class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        </div>
+        <div class="metric-card" data-index="2">
+          <div class="metric-label">Tempo Médio</div>
+          <div class="metric-value"><span id="cnt-tempo">0</span><span> dias</span></div>
+          <div class="metric-footer">↓ -0.4 dias otimizado</div>
+          <div class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        </div>
+        <div class="metric-card" data-index="3">
+          <div class="metric-label">Vagas Ativas</div>
+          <div class="metric-value"><span id="cnt-vagas">0</span></div>
+          <div class="metric-footer">↑ +3 abertas hoje</div>
+          <div class="metric-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+        </div>
+      </div>
+
+      <div class="dashboard-row">
+        <div class="chart-card">
+          <div class="section-title" style="margin-bottom:14px">Distribuição de Status</div>
+          <canvas id="pie-chart" width="280" height="220" style="margin:0 auto;display:block"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="section-title" style="margin-bottom:14px">Score Médio por Área</div>
+          <div class="bar-chart" id="area-bars"></div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <div class="section-title">Candidatos Recentes</div>
+        <button class="btn btn-primary btn-sm" onclick="switchTab('candidatos')">Ver todos →</button>
+      </div>
+      <div class="candidates-grid" id="recent-grid"></div>
+
+      <footer class="main-footer">
+        <p>Powered by <strong>NexusAI Recruit v2.1</strong> — Desenvolvido por <strong>Bruno Mayson</strong></p>
+      </footer>
+    </div>
+
+    <!-- CANDIDATOS TAB -->
+    <div class="tab-panel" id="tab-candidatos">
+      <div class="filters-bar">
+        <div class="filter-group">
+          <span class="filter-label">Cargo:</span>
+          <select class="filter-select" id="filter-cargo">
+            <option value="">Todos</option>
+            <option>Frontend Dev</option>
+            <option>DevOps Engineer</option>
+            <option>Product Manager</option>
+            <option>Backend Developer</option>
+            <option>UX Designer</option>
+            <option>Data Scientist</option>
+            <option>Full Stack Dev</option>
+            <option>Mobile Developer</option>
+            <option>Scrum Master</option>
+            <option>Cloud Architect</option>
+            <option>QA Engineer</option>
+            <option>Tech Lead</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Score mín:</span>
+          <input type="range" id="filter-score" min="0" max="100" value="0" style="--range-pct:0%">
+          <span class="range-val" id="score-val">0</span>
+        </div>
+        <div class="filter-group">
+          <span class="filter-label">Status:</span>
+          <div class="checkbox-group">
+            <label class="checkbox-label"><input type="checkbox" class="filter-status" value="Aprovado" checked> Aprovado</label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-status" value="Em Analise" checked> Em Análise</label>
+            <label class="checkbox-label"><input type="checkbox" class="filter-status" value="Rejeitado" checked> Rejeitado</label>
+          </div>
+        </div>
+      </div>
+      <div class="section-header">
+        <div class="section-title">Todos os Candidatos</div>
+        <button class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Novo Candidato
+        </button>
+      </div>
+      <div class="candidates-grid" id="all-candidates-grid"></div>
+
+      <footer class="main-footer">
+        <p>Powered by <strong>NexusAI Recruit v2.1</strong> — Desenvolvido por <strong>Bruno Mayson</strong></p>
+      </footer>
+    </div>
+
+    <!-- VAGAS TAB -->
+    <div class="tab-panel" id="tab-vagas">
+      <div class="section-header">
+        <div class="section-title">Vagas Abertas</div>
+        <button class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nova Vaga
+        </button>
+      </div>
+      <div class="vagas-grid" id="vagas-grid"></div>
+      <footer class="main-footer">
+        <p>Powered by <strong>NexusAI Recruit v2.1</strong> — Desenvolvido por <strong>Bruno Mayson</strong></p>
+      </footer>
+    </div>
+
+    <!-- RELATORIOS TAB -->
+    <div class="tab-panel" id="tab-relatorios">
+      <div class="section-header">
+        <div class="section-title">Relatórios e Métricas</div>
+        <button class="btn btn-secondary btn-sm">Exportar PDF</button>
+      </div>
+      <div class="relatorio-grid" id="relatorios-content"></div>
+      <footer class="main-footer">
+        <p>Powered by <strong>NexusAI Recruit v2.1</strong> — Desenvolvido por <strong>Bruno Mayson</strong></p>
+      </footer>
+    </div>
+
+    <!-- CONFIG TAB -->
+    <div class="tab-panel" id="tab-config">
+      <div class="section-title" style="margin-bottom:20px">Configurações do Sistema</div>
+      <div class="chart-card" style="max-width:500px">
+        <p style="color:var(--text-secondary);font-size:14px;line-height:1.7">
+          ⚙️ Módulo de configurações em desenvolvimento.<br>
+          Versão: <strong style="color:var(--purple-light)">NexusAI Recruit v2.1</strong><br>
+          Desenvolvido por <strong style="color:var(--cyan)">Bruno Mayson</strong>
+        </p>
+      </div>
+      <footer class="main-footer">
+        <p>Powered by <strong>NexusAI Recruit v2.1</strong> — Desenvolvido por <strong>Bruno Mayson</strong></p>
+      </footer>
+    </div>
+
+  </main>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawer-overlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div id="drawer-avatar" class="candidate-avatar" style="width:46px;height:46px;font-size:15px"></div>
+    <div>
+      <div id="drawer-name" style="font-size:16px;font-weight:700;color:var(--text-primary)"></div>
+      <div id="drawer-role" style="font-size:13px;color:var(--text-secondary)"></div>
+    </div>
+    <button class="drawer-close" onclick="closeDrawer()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section-title">Análise de Competências</div>
+    <div class="radar-container">
+      <canvas id="radar-canvas" width="280" height="220"></canvas>
+    </div>
+    <div class="drawer-section-title">Score por Categoria</div>
+    <div class="score-bars" id="drawer-bars"></div>
+    <div class="drawer-section-title">Timeline do Processo</div>
+    <div class="timeline" id="drawer-timeline"></div>
+    <button class="btn btn-primary" id="ai-analyze-btn" onclick="runAIAnalysis()" style="width:100%;justify-content:center;margin-top:4px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2v1.5c1.2.7 2 2 2 3.5a4 4 0 0 1-8 0c0-1.5.8-2.8 2-3.5V16H8a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h2V9.5C8.8 8.8 8 7.5 8 6a4 4 0 0 1 4-4z"/></svg>
+      Analisar com IA
+    </button>
+    <div id="ai-report-container"></div>
+    <div class="drawer-actions">
+      <button class="btn btn-success" id="approve-btn">✓ Aprovar</button>
+      <button class="btn btn-danger" id="reject-btn">✗ Rejeitar</button>
+      <button class="btn btn-secondary">Entrevista →</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script>
+// ========== DATA ==========
+const CANDIDATES = [
+  { id:1, name:'Ana Carolina Silva', role:'Senior Frontend Dev', skills:['React','TypeScript','Next.js'], score:92, status:'Aprovado', colors:['#7C3AED','#9D5CF6'], radar:[90,85,88,92,70,82] },
+  { id:2, name:'Rafael Mendonça', role:'DevOps Engineer', skills:['Docker','Kubernetes','AWS'], score:88, status:'Aprovado', colors:['#2563EB','#3B82F6'], radar:[85,78,90,82,75,80] },
+  { id:3, name:'Juliana Ferreira', role:'Product Manager', skills:['Agile','Jira','Analytics'], score:76, status:'Em Analise', colors:['#06B6D4','#22D3EE'], radar:[68,88,72,80,85,70] },
+  { id:4, name:'Thiago Oliveira', role:'Backend Developer', skills:['Python','Django','PostgreSQL'], score:84, status:'Aprovado', colors:['#10B981','#34D399'], radar:[88,72,80,78,65,76] },
+  { id:5, name:'Mariana Costa', role:'UX Designer', skills:['Figma','Prototyping','Research'], score:71, status:'Em Analise', colors:['#F59E0B','#FCD34D'], radar:[60,90,68,85,55,72] },
+  { id:6, name:'Lucas Rodrigues', role:'Data Scientist', skills:['Python','TensorFlow','SQL'], score:95, status:'Aprovado', colors:['#8B5CF6','#A78BFA'], radar:[96,80,92,88,72,95] },
+  { id:7, name:'Fernanda Lima', role:'Full Stack Dev', skills:['React','Node.js','MongoDB'], score:67, status:'Em Analise', colors:['#EC4899','#F472B6'], radar:[70,75,62,68,60,65] },
+  { id:8, name:'Bruno Santos', role:'Mobile Developer', skills:['Flutter','Dart','Firebase'], score:55, status:'Em Analise', colors:['#F97316','#FB923C'], radar:[58,62,50,55,48,52] },
+  { id:9, name:'Camila Alves', role:'Scrum Master', skills:['Agile','SAFe','Confluence'], score:79, status:'Aprovado', colors:['#14B8A6','#2DD4BF'], radar:[65,92,75,88,88,68] },
+  { id:10, name:'Diego Pereira', role:'Cloud Architect', skills:['AWS','Azure','Terraform'], score:31, status:'Rejeitado', colors:['#EF4444','#F87171'], radar:[35,28,32,30,25,35] },
+  { id:11, name:'Patrícia Gomes', role:'QA Engineer', skills:['Selenium','Cypress','Jest'], score:62, status:'Em Analise', colors:['#6366F1','#818CF8'], radar:[65,70,58,60,48,72] },
+  { id:12, name:'Eduardo Nascimento', role:'Tech Lead', skills:['React','AWS','Leadership'], score:89, status:'Aprovado', colors:['#0EA5E9','#38BDF8'], radar:[88,85,90,82,95,85] }
+];
+
+const VAGAS = [
+  { role:'Senior Frontend Developer', area:'Engenharia', candidatos:24, prazo:'30 Mai 2025', urgente:true },
+  { role:'Data Science Lead', area:'Analytics', candidatos:11, prazo:'15 Jun 2025', urgente:false },
+  { role:'DevOps / SRE Engineer', area:'Infraestrutura', candidatos:18, prazo:'25 Mai 2025', urgente:true },
+  { role:'Product Designer Sênior', area:'Design', candidatos:8, prazo:'10 Jul 2025', urgente:false },
+  { role:'Tech Lead Backend', area:'Engenharia', candidatos:15, prazo:'05 Jun 2025', urgente:true }
+];
+
+let currentCandidate = null;
+let activeTab = 'dashboard';
+let searchQuery = '';
+let filterCargo = '';
+let filterMinScore = 0;
+let filterStatuses = ['Aprovado','Em Analise','Rejeitado'];
+
+// ========== PARTICLES ==========
+(function() {
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  const COLORS = ['#7C3AED','#2563EB','#06B6D4'];
+
+  function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for(let i=0;i<70;i++) particles.push({
+    x: Math.random()*window.innerWidth,
+    y: Math.random()*window.innerHeight,
+    r: Math.random()*1.8+0.4,
+    dx: (Math.random()-0.5)*0.4,
+    dy: (Math.random()-0.5)*0.4,
+    color: COLORS[Math.floor(Math.random()*3)],
+    alpha: Math.random()*0.5+0.15
+  });
+
+  function draw() {
+    ctx.clearRect(0,0,W,H);
+    for(let i=0;i<particles.length;i++) {
+      const p = particles[i];
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.fill();
+      p.x += p.dx; p.y += p.dy;
+      if(p.x<0||p.x>W) p.dx*=-1;
+      if(p.y<0||p.y>H) p.dy*=-1;
+      for(let j=i+1;j<particles.length;j++) {
+        const q = particles[j];
+        const dist = Math.hypot(p.x-q.x, p.y-q.y);
+        if(dist<120) {
+          ctx.beginPath();
+          ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
+          ctx.strokeStyle = p.color;
+          ctx.globalAlpha = (1-dist/120)*0.12;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ========== HELPERS ==========
+function getInitials(name) { return name.split(' ').slice(0,2).map(n=>n[0]).join(''); }
+function getScoreClass(score) { return score>=70?'green':score>=40?'yellow':'red'; }
+function getStatusClass(status) {
+  if(status==='Aprovado') return 'aprovado';
+  if(status==='Rejeitado') return 'rejeitado';
+  return 'analise';
+}
+function getStatusLabel(status) {
+  if(status==='Em Analise') return 'Em Análise';
+  return status;
+}
+
+function animateCounter(el, target, duration, suffix='', decimals=0) {
+  let start = null;
+  const step = ts => {
+    if(!start) start = ts;
+    const progress = Math.min((ts-start)/duration, 1);
+    const ease = 1 - Math.pow(1-progress, 3);
+    const val = ease * target;
+    el.textContent = decimals ? val.toFixed(decimals) : Math.round(val);
+    if(progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// ========== CARD BUILDER ==========
+function buildCandidateCard(c, index=0) {
+  const div = document.createElement('div');
+  div.className = 'candidate-card';
+  div.style.animationDelay = (index*0.05)+'s';
+  const sc = getScoreClass(c.score);
+  div.innerHTML = `
+    <div class="candidate-header">
+      <div class="candidate-avatar" style="background:linear-gradient(135deg,${c.colors[0]},${c.colors[1]})">${getInitials(c.name)}</div>
+      <div class="candidate-info">
+        <div class="name">${c.name}</div>
+        <div class="role">${c.role}</div>
+      </div>
+    </div>
+    <div class="candidate-skills">${c.skills.map(s=>`<span class="skill-badge">${s}</span>`).join('')}</div>
+    <div class="candidate-footer">
+      <div class="score-section">
+        <div class="score-label"><span>Score IA</span><span class="score-val">${c.score}/100</span></div>
+        <div class="score-bar"><div class="score-fill ${sc}" style="width:0%" data-target="${c.score}%"></div></div>
+      </div>
+      <span class="status-badge ${getStatusClass(c.status)}">${getStatusLabel(c.status)}</span>
+    </div>`;
+  div.addEventListener('click', () => openDrawer(c));
+  return div;
+}
+
+function animateScoreBars() {
+  setTimeout(()=>{
+    document.querySelectorAll('.score-fill[data-target]').forEach(el=>{
+      el.style.width = el.dataset.target;
+    });
+  }, 100);
+}
+
+// ========== RENDER FUNCTIONS ==========
+function renderRecentGrid() {
+  const grid = document.getElementById('recent-grid');
+  grid.innerHTML = '';
+  CANDIDATES.slice(0,6).forEach((c,i)=>{ grid.appendChild(buildCandidateCard(c,i)); });
+  animateScoreBars();
+}
+
+function renderAllCandidates() {
+  const grid = document.getElementById('all-candidates-grid');
+  grid.innerHTML = '';
+  const q = searchQuery.toLowerCase();
+  let filtered = CANDIDATES.filter(c=>{
+    const matchSearch = !q || c.name.toLowerCase().includes(q) || c.skills.some(s=>s.toLowerCase().includes(q)) || c.role.toLowerCase().includes(q);
+    const matchCargo = !filterCargo || c.role.includes(filterCargo);
+    const matchScore = c.score >= filterMinScore;
+    const matchStatus = filterStatuses.includes(c.status);
+    return matchSearch && matchCargo && matchScore && matchStatus;
+  });
+  if(!filtered.length) {
+    grid.innerHTML = `<div class="no-results"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Nenhum candidato encontrado com esses filtros.</div>`;
+    return;
+  }
+  filtered.forEach((c,i)=>{ grid.appendChild(buildCandidateCard(c,i)); });
+  animateScoreBars();
+}
+
+function renderVagas() {
+  const grid = document.getElementById('vagas-grid');
+  grid.innerHTML = '';
+  VAGAS.forEach((v,i)=>{
+    const div = document.createElement('div');
+    div.className = 'vaga-card';
+    div.style.animationDelay = (i*0.08)+'s';
+    div.innerHTML = `
+      <div class="vaga-status">
+        <span class="status-badge ${v.urgente?'rejeitado':'aprovado'}">${v.urgente?'Urgente':'Normal'}</span>
+      </div>
+      <div class="vaga-header">
+        <div class="vaga-role">${v.role}</div>
+        <span class="vaga-area-badge">${v.area}</span>
+      </div>
+      <div class="vaga-stats">
+        <div class="vaga-stat"><div class="val">${v.candidatos}</div><div class="lbl">Candidatos</div></div>
+        <div class="vaga-stat"><div class="val">3</div><div class="lbl">Em triagem</div></div>
+      </div>
+      <div class="vaga-deadline">📅 Prazo: ${v.prazo}</div>`;
+    div.addEventListener('click', ()=>showToast('info','📋 Vaga selecionada: '+v.role));
+    grid.appendChild(div);
+  });
+}
+
+function renderRelatorios() {
+  const areas = [
+    {label:'Frontend',score:80,color:'linear-gradient(90deg,#7C3AED,#2563EB)'},
+    {label:'Backend',score:74,color:'linear-gradient(90deg,#2563EB,#06B6D4)'},
+    {label:'DevOps',score:68,color:'linear-gradient(90deg,#06B6D4,#10B981)'},
+    {label:'Data Science',score:89,color:'linear-gradient(90deg,#8B5CF6,#7C3AED)'},
+    {label:'Design/UX',score:63,color:'linear-gradient(90deg,#F59E0B,#EC4899)'},
+    {label:'Mobile',score:55,color:'linear-gradient(90deg,#F97316,#EF4444)'},
+  ];
+  const meses = [
+    {label:'Jan',v:18},{label:'Fev',v:24},{label:'Mar',v:31},
+    {label:'Abr',v:28},{label:'Mai',v:38},{label:'Jun',v:42}
+  ];
+  const c = document.getElementById('relatorios-content');
+  c.innerHTML = '';
+
+  // Card 1: Scores por area
+  const c1 = document.createElement('div');
+  c1.className = 'relatorio-card';
+  c1.style.animationDelay='0s';
+  c1.innerHTML = `<div class="section-title">Score Médio por Área</div><div class="bar-chart">${
+    areas.map(a=>`<div class="bar-row">
+      <div class="bar-row-label">${a.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%;background:${a.color}" data-target="${a.score}%">
+          <span>${a.score}%</span>
+        </div>
+      </div>
+    </div>`).join('')
+  }</div>`;
+  c.appendChild(c1);
+
+  // Card 2: Candidatos por mes
+  const c2 = document.createElement('div');
+  c2.className = 'relatorio-card';
+  c2.style.animationDelay='0.1s';
+  c2.innerHTML = `<div class="section-title">Candidatos por Mês</div><div class="bar-chart">${
+    meses.map(m=>`<div class="bar-row">
+      <div class="bar-row-label">${m.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#7C3AED,#06B6D4)" data-target="${Math.round(m.v/42*100)}%">
+          <span>${m.v}</span>
+        </div>
+      </div>
+    </div>`).join('')
+  }</div>`;
+  c.appendChild(c2);
+
+  // Card 3: Taxa de aprovacao
+  const c3 = document.createElement('div');
+  c3.className = 'relatorio-card';
+  c3.style.animationDelay='0.2s';
+  const approved = CANDIDATES.filter(c=>c.status==='Aprovado').length;
+  const rejected = CANDIDATES.filter(c=>c.status==='Rejeitado').length;
+  const analysis = CANDIDATES.filter(c=>c.status==='Em Analise').length;
+  c3.innerHTML = `<div class="section-title">Funil de Seleção</div><div class="bar-chart">
+    <div class="bar-row"><div class="bar-row-label">Recebidos</div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#7C3AED,#2563EB)" data-target="100%"><span>247</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Triagem IA</div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#2563EB,#06B6D4)" data-target="72%"><span>178</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Entrevistas</div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#06B6D4,#10B981)" data-target="40%"><span>99</span></div></div></div>
+    <div class="bar-row"><div class="bar-row-label">Aprovados</div>
+      <div class="bar-track"><div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#10B981,#34D399)" data-target="24%"><span>59</span></div></div></div>
+  </div>`;
+  c.appendChild(c3);
+
+  // Card 4: Distribuicao
+  const c4 = document.createElement('div');
+  c4.className = 'relatorio-card';
+  c4.style.animationDelay='0.3s';
+  c4.innerHTML = `<div class="section-title">Distribuição desta Semana</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px">
+      <div style="text-align:center;padding:16px;background:rgba(16,185,129,0.1);border-radius:10px;border:1px solid rgba(16,185,129,0.2)">
+        <div style="font-size:28px;font-weight:800;color:#34D399">${approved}</div>
+        <div style="font-size:12px;color:var(--text-muted)">Aprovados</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:rgba(245,158,11,0.1);border-radius:10px;border:1px solid rgba(245,158,11,0.2)">
+        <div style="font-size:28px;font-weight:800;color:#FCD34D">${analysis}</div>
+        <div style="font-size:12px;color:var(--text-muted)">Em Análise</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:rgba(239,68,68,0.1);border-radius:10px;border:1px solid rgba(239,68,68,0.2)">
+        <div style="font-size:28px;font-weight:800;color:#F87171">${rejected}</div>
+        <div style="font-size:12px;color:var(--text-muted)">Rejeitados</div>
+      </div>
+      <div style="text-align:center;padding:16px;background:rgba(124,58,237,0.1);border-radius:10px;border:1px solid rgba(124,58,237,0.2)">
+        <div style="font-size:28px;font-weight:800;color:#9D5CF6">73%</div>
+        <div style="font-size:12px;color:var(--text-muted)">Match Rate</div>
+      </div>
+    </div>`;
+  c.appendChild(c4);
+
+  setTimeout(()=>{
+    c.querySelectorAll('.bar-fill[data-target]').forEach(el=>{
+      el.style.width = el.dataset.target;
+    });
+  }, 200);
+}
+
+// ========== PIE CHART ==========
+function drawPieChart() {
+  const canvas = document.getElementById('pie-chart');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const approved = CANDIDATES.filter(c=>c.status==='Aprovado').length;
+  const analysis = CANDIDATES.filter(c=>c.status==='Em Analise').length;
+  const rejected = CANDIDATES.filter(c=>c.status==='Rejeitado').length;
+  const total = CANDIDATES.length;
+  const data = [
+    {label:'Aprovado',value:approved,color:'#10B981'},
+    {label:'Em Análise',value:analysis,color:'#F59E0B'},
+    {label:'Rejeitado',value:rejected,color:'#EF4444'}
+  ];
+  const cx=140,cy=100,r=80;
+  let startAngle = -Math.PI/2;
+  ctx.clearRect(0,0,280,220);
+  data.forEach(d=>{
+    const angle = (d.value/total)*Math.PI*2;
+    ctx.beginPath();
+    ctx.moveTo(cx,cy);
+    ctx.arc(cx,cy,r,startAngle,startAngle+angle);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.globalAlpha = 0.85;
+    ctx.fill();
+    ctx.strokeStyle = '#00000030';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    startAngle += angle;
+  });
+  ctx.globalAlpha = 1;
+  // Hole
+  ctx.beginPath(); ctx.arc(cx,cy,r*0.55,0,Math.PI*2);
+  const isDark = document.documentElement.dataset.theme !== 'light';
+  ctx.fillStyle = isDark ? '#0D1117' : '#E2E8F0'; ctx.fill();
+  // Center text
+  ctx.fillStyle = isDark ? '#F1F5F9' : '#0F172A';
+  ctx.font = 'bold 20px Inter'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(total, cx, cy-6);
+  ctx.font = '11px Inter'; ctx.fillStyle = isDark ? '#94A3B8' : '#64748B';
+  ctx.fillText('total', cx, cy+12);
+  // Legend
+  const ly = 190; let lx = 30;
+  data.forEach(d=>{
+    ctx.fillStyle = d.color; ctx.globalAlpha=0.9;
+    ctx.fillRect(lx,ly,10,10);
+    ctx.globalAlpha=1;
+    ctx.fillStyle = isDark ? '#94A3B8' : '#475569';
+    ctx.font = '11px Inter'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.fillText(`${d.label} (${d.value})`, lx+14, ly+5);
+    lx += 94;
+  });
+}
+
+// ========== AREA BARS DASHBOARD ==========
+function renderAreaBars() {
+  const areas = [
+    {label:'Engenharia',score:86},{label:'Data/Analytics',score:89},
+    {label:'Design/UX',score:71},{label:'DevOps',score:83},
+    {label:'Mobile',score:55},{label:'Produto',score:76}
+  ];
+  const container = document.getElementById('area-bars');
+  if(!container) return;
+  container.innerHTML = areas.map(a=>`
+    <div class="bar-row">
+      <div class="bar-row-label">${a.label}</div>
+      <div class="bar-track">
+        <div class="bar-fill" style="width:0%;background:linear-gradient(90deg,#7C3AED,#06B6D4)" data-target="${a.score}%">
+          <span>${a.score}</span>
+        </div>
+      </div>
+    </div>`).join('');
+  setTimeout(()=>{
+    container.querySelectorAll('.bar-fill').forEach(el=>{ el.style.width=el.dataset.target; });
+  }, 200);
+}
+
+// ========== RADAR CHART ==========
+function drawRadarChart(scores) {
+  const canvas = document.getElementById('radar-canvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,280,220);
+  const labels = ['Técnico','Comunicação','Experiência','Fit Cultural','Liderança','Inovação'];
+  const N = labels.length;
+  const cx=140, cy=110, maxR=80;
+  const isDark = document.documentElement.dataset.theme !== 'light';
+  const gridColor = isDark ? 'rgba(255,255,255,0.07)' : 'rgba(0,0,0,0.07)';
+  const textColor = isDark ? '#94A3B8' : '#64748B';
+  // Grid
+  for(let level=1;level<=5;level++) {
+    ctx.beginPath();
+    for(let i=0;i<N;i++) {
+      const angle = (Math.PI*2/N)*i - Math.PI/2;
+      const r = (level/5)*maxR;
+      const x = cx + r*Math.cos(angle), y = cy + r*Math.sin(angle);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.closePath();
+    ctx.strokeStyle = gridColor; ctx.lineWidth=1; ctx.stroke();
+  }
+  // Axes
+  for(let i=0;i<N;i++) {
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    ctx.beginPath(); ctx.moveTo(cx,cy);
+    ctx.lineTo(cx+maxR*Math.cos(angle), cy+maxR*Math.sin(angle));
+    ctx.strokeStyle = gridColor; ctx.lineWidth=1; ctx.stroke();
+  }
+  // Data
+  ctx.beginPath();
+  scores.forEach((s,i)=>{
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    const r = (s/100)*maxR;
+    const x = cx+r*Math.cos(angle), y = cy+r*Math.sin(angle);
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(124,58,237,0.2)'; ctx.fill();
+  ctx.strokeStyle = '#7C3AED'; ctx.lineWidth=2; ctx.stroke();
+  // Dots
+  scores.forEach((s,i)=>{
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    const r = (s/100)*maxR;
+    ctx.beginPath(); ctx.arc(cx+r*Math.cos(angle), cy+r*Math.sin(angle), 4, 0, Math.PI*2);
+    ctx.fillStyle='#9D5CF6'; ctx.fill();
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1.5; ctx.stroke();
+  });
+  // Labels
+  labels.forEach((l,i)=>{
+    const angle = (Math.PI*2/N)*i - Math.PI/2;
+    const lx = cx + (maxR+18)*Math.cos(angle);
+    const ly = cy + (maxR+18)*Math.sin(angle);
+    ctx.fillStyle = textColor;
+    ctx.font = '10px Inter'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(l, lx, ly);
+  });
+}
+
+// ========== DRAWER ==========
+function openDrawer(c) {
+  currentCandidate = c;
+  document.getElementById('drawer-avatar').style.background = `linear-gradient(135deg,${c.colors[0]},${c.colors[1]})`;
+  document.getElementById('drawer-avatar').textContent = getInitials(c.name);
+  document.getElementById('drawer-name').textContent = c.name;
+  document.getElementById('drawer-role').textContent = c.role;
+
+  // Score bars
+  const catLabels = ['Técnico','Comunicação','Experiência','Fit Cultural','Liderança','Inovação'];
+  const barsEl = document.getElementById('drawer-bars');
+  barsEl.innerHTML = catLabels.map((l,i)=>`
+    <div class="score-bar-item">
+      <div class="score-bar-label"><span>${l}</span><span>${c.radar[i]}</span></div>
+      <div class="score-bar-track"><div class="score-bar-fill" style="width:0%" data-target="${c.radar[i]}%"></div></div>
+    </div>`).join('');
+
+  // Timeline
+  const stages = [
+    {title:'Candidatura Recebida',date:'12 Abr 2025',state:'done'},
+    {title:'Triagem por IA',date:'13 Abr 2025',state:'done'},
+    {title:'Entrevista Técnica',date:'15 Abr 2025',state: c.status==='Aprovado'?'done':'current'},
+    {title:'Decisão Final',date:c.status==='Aprovado'?'16 Abr 2025':'Pendente',state:c.status==='Aprovado'?'done':''}
+  ];
+  document.getElementById('drawer-timeline').innerHTML = stages.map((s,i)=>`
+    <div class="timeline-item">
+      <div class="timeline-dot ${s.state}">${i+1}</div>
+      <div class="timeline-content"><div class="t-title">${s.title}</div><div class="t-date">${s.date}</div></div>
+    </div>`).join('');
+
+  document.getElementById('ai-report-container').innerHTML = '';
+  document.getElementById('ai-analyze-btn').innerHTML = `
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a4 4 0 0 1 4 4c0 1.5-.8 2.8-2 3.5V11h2a2 2 0 0 1 2 2v1a2 2 0 0 1-2 2h-2v1.5c1.2.7 2 2 2 3.5a4 4 0 0 1-8 0c0-1.5.8-2.8 2-3.5V16H8a2 2 0 0 1-2-2v-1a2 2 0 0 1 2-2h2V9.5C8.8 8.8 8 7.5 8 6a4 4 0 0 1 4-4z"/></svg>
+    Analisar com IA`;
+
+  document.getElementById('approve-btn').onclick = () => approveCandidato(c);
+  document.getElementById('reject-btn').onclick = () => rejectCandidato(c);
+
+  document.getElementById('drawer-overlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(()=>{
+    drawRadarChart(c.radar);
+    barsEl.querySelectorAll('.score-bar-fill').forEach(el=>{ el.style.width=el.dataset.target; });
+  }, 80);
+}
+
+function closeDrawer() {
+  document.getElementById('drawer-overlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('drawer-overlay').addEventListener('click', closeDrawer);
+
+function runAIAnalysis() {
+  const btn = document.getElementById('ai-analyze-btn');
+  btn.innerHTML = `<div class="spinner"></div> Analisando...`;
+  btn.disabled = true;
+  const c = currentCandidate;
+  const reports = {
+    92:{ pros:['Experiência sólida em React e TypeScript','Portfólio robusto com projetos Next.js escaláveis','Alta adaptabilidade e fit cultural excelente'], cons:['Limitada experiência em liderança de equipes','Pouca vivência com metodologias ágeis avançadas'] },
+    88:{ pros:['Domínio técnico completo do stack DevOps','Experiência comprovada em ambientes de alta disponibilidade','Certificações AWS e Kubernetes validadas'], cons:['Comunicação com áreas de negócio pode melhorar','Curva de adaptação cultural esperada'] },
+    76:{ pros:['Forte visão de produto e roadmap estratégico','Excelente comunicação cross-funcional','Gestão eficaz de stakeholders'], cons:['Conhecimento técnico intermediário pode limitar decisões','Necessita aprofundar métricas de dados'] },
+    84:{ pros:['Stack Python/Django sólido e testado','Boas práticas de código e documentação','Proatividade e entregas dentro do prazo'], cons:['Experiência limitada em cloud nativa','Precisa evoluir em soft skills de liderança'] },
+    71:{ pros:['Domínio do Figma e ferramentas de prototipação','Pesquisa com usuário bem estruturada','Sensibilidade visual e consistência de design'], cons:['Portfolio com poucos projetos de grande escala','Precisa de experiência em design systems'] },
+    95:{ pros:['Perfil técnico excepcional — top 5% da triagem','Domínio de TensorFlow e modelos avançados','Publicações e projetos de IA documentados'], cons:['Alta senioridade pode gerar expectativa salarial acima do budget','Perfil muito técnico, desenvolvimento em gestão recomendado'] },
+    67:{ pros:['Full stack versátil e produtivo','Boa base em React e Node.js','Rápida curva de aprendizado'], cons:['Score abaixo da média — recomenda-se entrevista técnica adicional','Experiência com MongoDB superficial nos projetos analisados'] },
+    55:{ pros:['Conhecimento em Flutter e Firebase atualizado','Entusiasmo e potencial de crescimento evidentes'], cons:['Score moderado indica gaps técnicos relevantes','Experiência em produção ainda limitada','Necessita mentoria e acompanhamento próximo'] },
+    79:{ pros:['Certificação SAFe comprovada e aplicada','Excelente capacidade de facilitação de equipes','Histórico de entregas ágeis bem documentado'], cons:['Limitações em contextos técnicos mais profundos','Pouca experiência com squads distribuídos'] },
+    31:{ pros:['Conhecimento teórico de múltiplas clouds','Motivação demonstrada para crescimento na área'], cons:['Score crítico — gaps técnicos significativos identificados','Projetos práticos insuficientes para a vaga','Experiência prática com Terraform muito limitada','Recomenda-se não avançar sem teste técnico presencial'] },
+    62:{ pros:['Experiência em Cypress e automação web','Boas práticas de QA documentadas','Trabalho em equipe destacado'], cons:['Score médio — recomenda-se avaliação técnica complementar','Pouca experiência em performance testing'] },
+    89:{ pros:['Perfil Tech Lead completo: técnico + gestão','Experiência em escalar times de engenharia','Stack React + AWS alinhado à necessidade da empresa'], cons:['Alta expectativa de autonomia pode criar atritos em culturas hierárquicas','Histórico recente com apenas startups — adaptação à enterprise pode demorar'] }
+  };
+  setTimeout(()=>{
+    const r = reports[c.score] || { pros:['Perfil analisado com sucesso','Competências verificadas'], cons:['Análise em progresso'] };
+    document.getElementById('ai-report-container').innerHTML = `
+      <div class="ai-report">
+        <h4>✦ Relatório IA — ${c.name}</h4>
+        <div style="margin-bottom:8px"><div style="font-size:11px;font-weight:600;color:var(--green-light);margin-bottom:5px">✓ Pontos Fortes</div>
+          <ul>${r.pros.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+        <div><div style="font-size:11px;font-weight:600;color:var(--red-light);margin-bottom:5px">✗ Pontos de Atenção</div>
+          <ul>${r.cons.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border);font-size:11px;color:var(--text-muted)">
+          Confiança da análise: <strong style="color:var(--cyan-light)">${Math.min(100,c.score+3)}%</strong> | Processado em 1.8s</div>
+      </div>`;
+    btn.innerHTML = `✦ Análise Concluída`;
+    btn.disabled = false;
+    btn.style.background = 'linear-gradient(135deg,#059669,#10B981)';
+  }, 2000);
+}
+
+function approveCandidato(c) {
+  closeDrawer();
+  showToast('success', `✓ ${c.name} aprovado com sucesso!`);
+}
+function rejectCandidato(c) {
+  closeDrawer();
+  showToast('error', `✗ ${c.name} foi rejeitado.`);
+}
+
+// ========== TOAST ==========
+function showToast(type, msg) {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  const icons = { success:'✓', error:'✗', info:'ℹ' };
+  toast.innerHTML = `
+    <div class="toast-icon ${type}">${icons[type]||'ℹ'}</div>
+    <div class="toast-msg">${msg}</div>
+    <button class="toast-close" onclick="this.closest('.toast').remove()">×</button>`;
+  container.appendChild(toast);
+  setTimeout(()=>{ toast.classList.add('hiding'); setTimeout(()=>toast.remove(),300); }, 3500);
+}
+
+// ========== NAV ==========
+function switchTab(tabName) {
+  activeTab = tabName;
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const panel = document.getElementById('tab-'+tabName);
+  if(panel) panel.classList.add('active');
+  const navItem = document.querySelector(`[data-tab="${tabName}"]`);
+  if(navItem) navItem.classList.add('active');
+  const titles = { dashboard:'Dashboard', candidatos:'Candidatos', vagas:'Vagas Abertas', relatorios:'Relatórios', config:'Configurações' };
+  document.getElementById('page-title').textContent = titles[tabName]||tabName;
+  if(tabName==='candidatos') { renderAllCandidates(); }
+  if(tabName==='vagas') { renderVagas(); }
+  if(tabName==='relatorios') { renderRelatorios(); }
+}
+
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click', ()=>{ switchTab(item.dataset.tab); });
+});
+
+// ========== SEARCH ==========
+document.getElementById('global-search').addEventListener('input', function() {
+  searchQuery = this.value;
+  if(activeTab==='candidatos') renderAllCandidates();
+  else if(activeTab==='dashboard') { switchTab('candidatos'); }
+});
+
+// ========== FILTERS ==========
+document.getElementById('filter-cargo').addEventListener('change', function() {
+  filterCargo = this.value;
+  renderAllCandidates();
+});
+const scoreSlider = document.getElementById('filter-score');
+scoreSlider.addEventListener('input', function() {
+  filterMinScore = parseInt(this.value);
+  document.getElementById('score-val').textContent = this.value;
+  const pct = (this.value/100*100)+'%';
+  this.style.setProperty('--range-pct', pct);
+  renderAllCandidates();
+});
+document.querySelectorAll('.filter-status').forEach(cb=>{
+  cb.addEventListener('change', ()=>{
+    filterStatuses = Array.from(document.querySelectorAll('.filter-status:checked')).map(c=>c.value);
+    renderAllCandidates();
+  });
+});
+
+// ========== THEME ==========
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const html = document.documentElement;
+  const isDark = html.dataset.theme==='dark';
+  html.dataset.theme = isDark?'light':'dark';
+  document.getElementById('theme-icon-dark').style.display = isDark?'none':'block';
+  document.getElementById('theme-icon-light').style.display = isDark?'block':'none';
+  setTimeout(()=>{ drawPieChart(); if(currentCandidate) drawRadarChart(currentCandidate.radar); }, 50);
+  showToast('info', isDark?'☀️ Modo claro ativado':'🌙 Modo escuro ativado');
+});
+
+// ========== INIT ==========
+window.addEventListener('DOMContentLoaded', ()=>{
+  // Counters
+  setTimeout(()=>{
+    animateCounter(document.getElementById('cnt-total'), 247, 1400);
+    animateCounter(document.getElementById('cnt-match'), 73, 1600);
+    animateCounter(document.getElementById('cnt-tempo'), 2.3, 1200, '', 1);
+    animateCounter(document.getElementById('cnt-vagas'), 18, 1000);
+  }, 200);
+
+  renderRecentGrid();
+  drawPieChart();
+  renderAreaBars();
+});
+</script>
+</body>
+</html>
